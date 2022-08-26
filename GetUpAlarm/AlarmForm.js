@@ -1,11 +1,20 @@
 import {View, Text, TextInput, StyleSheet, Button} from 'react-native';
 import React, {useState} from 'react';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import DropDownPicker from 'react-native-dropdown-picker';
 
 const AlarmForm = () => {
   const [date, setDate] = useState(new Date(1598051730000));
   const [mode, setMode] = useState('time');
   const [show, setShow] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState(null);
+  const [items, setItems] = useState([
+    {label: 'Standard', value: 'standard'},
+    {label: 'NFC', value: 'nfc'},
+    {label: 'Payment', value: 'payment'},
+    {label: 'Memory', value: 'memory'},
+  ]);
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate;
@@ -27,8 +36,8 @@ const AlarmForm = () => {
   };
   return (
     <View>
-      <TextInput style={styles.field} placeholder="Enter alarm stuff" />
-      <Button onPress={showTimepicker} title="Show time picker!" />
+      <TextInput style={styles.field} placeholder="Name" />
+      <Button onPress={showTimepicker} title="Select Time" />
       <Text>selected: {date.toLocaleString()}</Text>
       {show && (
         <DateTimePicker
@@ -39,6 +48,14 @@ const AlarmForm = () => {
           onChange={onChange}
         />
       )}
+      <DropDownPicker
+        open={open}
+        value={value}
+        items={items}
+        setOpen={setOpen}
+        setValue={setValue}
+        setItems={setItems}
+      />
     </View>
   );
 };
