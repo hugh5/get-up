@@ -4,11 +4,12 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import DropDownPicker from 'react-native-dropdown-picker';
 
 const AlarmForm = () => {
-  const [date, setDate] = useState(new Date(1598051730000));
+  const [date, setDate] = useState(new Date());
   const [mode, setMode] = useState('time');
-  const [show, setShow] = useState(false);
+  const [showDate, setShowDate] = useState(false);
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
+  const [label, setLabel] = useState(null);
   const [items, setItems] = useState([
     {label: 'Standard', value: 'standard'},
     {label: 'NFC', value: 'nfc'},
@@ -18,13 +19,13 @@ const AlarmForm = () => {
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate;
-    setShow(false);
+    setShowDate(false);
     setDate(currentDate);
   };
 
   const showMode = currentMode => {
     if (Platform.OS === 'android') {
-      setShow(false);
+      setShowDate(false);
       // for iOS, add a button that closes the picker
     }
     setMode(currentMode);
@@ -32,20 +33,24 @@ const AlarmForm = () => {
 
   const showTimepicker = () => {
     showMode('time');
-    setShow('true');
+    setShowDate('true');
   };
   return (
     <View>
       <TextInput style={styles.field} placeholder="Name" />
-      <Button onPress={showTimepicker} title="Select Time" />
-      <Text>selected: {date.toLocaleString()}</Text>
-      {show && (
+      <Button
+        onPress={showTimepicker}
+        title="Select Time"
+        style={styles.input}
+      />
+      {showDate && (
         <DateTimePicker
           testID="dateTimePicker"
           value={date}
           mode={mode}
           is24Hour={true}
           onChange={onChange}
+          style={styles.input}
         />
       )}
       <DropDownPicker
@@ -55,7 +60,9 @@ const AlarmForm = () => {
         setOpen={setOpen}
         setValue={setValue}
         setItems={setItems}
+        style={styles.input}
       />
+      <Button title="create" style={styles.input} />
     </View>
   );
 };
@@ -63,8 +70,13 @@ const AlarmForm = () => {
 const styles = StyleSheet.create({
   field: {
     borderWidth: 2,
-    borderColor: 'skyblue',
+    borderColor: 'black',
     margin: 20,
+  },
+  input: {
+    margin: 30,
+    width: 200,
+    borderColor: 'purple',
   },
 });
 

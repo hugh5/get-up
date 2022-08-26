@@ -1,14 +1,15 @@
 import {Text, View, StyleSheet} from 'react-native';
-import React, {Component} from 'react';
+import React, {Component, useState} from 'react';
 import NewAlarmButton from './NewAlarmButton';
 import AlarmForm from './AlarmForm';
 
 export function App() {
+  const [showForm, setShowForm] = useState(false);
+
   return (
     <View style={styles.container}>
       <Text>Alarm</Text>
       <AlarmForm />
-      <NewAlarmButton />
     </View>
   );
 }
