@@ -17,6 +17,8 @@
     "react-native-date-picker": "^4.2.5",
     "react-native-dropdown-picker": "^5.4.2",
     "react-native-modal-datetime-picker": "^13.1.2",
+    "react-native-modal-dropdown": "^1.0.2",
+    "react-native-radio-buttons-group": "^2.2.11",
     "react-time-picker-input": "^2.0.10"
   },
   "devDependencies": {
