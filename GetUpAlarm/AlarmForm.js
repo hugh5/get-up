@@ -45,7 +45,16 @@ const AlarmForm = () => {
       stopOption: null,
     },
   });
-  const onSubmit = data => console.log(data);
+  const onSubmit = data => {
+    let alarm = {};
+    alarm.name = data.name;
+    const selectedStopOption = data.stopOption.findIndex(
+      option => option.selected === true,
+    );
+    alarm.stopOption = data.stopOption[selectedStopOption].value;
+    alarm.time = data.time + data.time.getTimezoneOffset();
+    console.log(alarm);
+  };
 
   return (
     <View style={styles.container}>
@@ -82,6 +91,7 @@ const AlarmForm = () => {
       />
       <Controller
         control={control}
+        rules={{required: true}}
         render={({field: {onChange, onBlur, value}}) => (
           <RadioGroup
             radioButtons={radioButtons}
