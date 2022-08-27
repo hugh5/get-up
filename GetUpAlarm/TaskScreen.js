@@ -1,28 +1,42 @@
 import React from 'react';
-<<<<<<< HEAD
-import {View, Text, Button, StyleSheet} from 'react-native';
-=======
-import {StyleSheet, View, Text, Button} from 'react-native';
->>>>>>> 9872b5012a3d66a284bf3ee8c0337a3756f72e04
+import {View, Text, Button} from 'react-native';
 
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
-const TaskScreen = ({navigation}) => {
-  return (
-    <View>
-<<<<<<< HEAD
-=======
-      <View style={styles.top}>
-        <Text>Hello</Text>
-      </View>
->>>>>>> 9872b5012a3d66a284bf3ee8c0337a3756f72e04
-      <Button
-        title="New Alarm"
-        onPress={() => navigation.navigate('Set Alarms')}
-      />
-    </View>
-  );
+import NfcManager, {NfcEvents, NfcTech} from 'react-native-nfc-manager';
+import SoundPlayer from 'react-native-sound-player';
+
+const TaskScreen = ({route, navigation}) => {
+  let task = 0;
+  switch (task) {
+    case 1:
+      return (
+        <Button
+          title="To alarm creator"
+          onPress={() => navigation.navigate('Set Alarms')}
+        />
+      );
+      break;
+    case 2:
+      return <NfcTask />;
+      break;
+    case 3:
+      return <MemoryTask />;
+      break;
+    case 4:
+      return <CreditCardTask />;
+      break;
+    default:
+      return (
+        <Button
+          title="To alarm creator"
+          onPress={() => navigation.navigate('Set Alarms')}
+        />
+      );
+  }
 };
+
+
 
 export default TaskScreen;

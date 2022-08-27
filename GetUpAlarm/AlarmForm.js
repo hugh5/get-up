@@ -1,35 +1,46 @@
-import {View, Text, TextInput, StyleSheet, Button} from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  Button,
+  ToastAndroid,
+} from 'react-native';
 import React, {useState} from 'react';
 import DatePicker from 'react-native-date-picker';
-//import DateTimePicker from '@react-native-community/datetimepicker';
 import {useForm, Controller} from 'react-hook-form';
 import RadioGroup from 'react-native-radio-buttons-group';
-import NfcManager, {NfcTech} from 'react-native-nfc-manager';
+import AlarmModuleTest from './AlarmModuleTest';
+import NfcManager, {NfcEvents, NfcTech} from 'react-native-nfc-manager';
 import SoundPlayer from 'react-native-sound-player';
 
+const radioButtonsData = [
+  {
+    id: '1', // acts as primary key, should be unique and non-empty string
+    label: 'Standard',
+    value: 'standard',
+  },
+  {
+    id: '2',
+    label: 'NFC',
+    value: 'nfc',
+  },
+  {
+    id: '3',
+    label: 'Payment',
+    value: 'payment',
+  },
+  {
+    id: '4',
+    label: 'Memory',
+    value: 'memory',
+  },
+];
+
 const AlarmForm = ({navigation}) => {
-  NfcManager.start();
-
-  const radioButtonsData = [
-    {
-      id: '1', // acts as primary key, should be unique and non-empty string
-      label: 'Standard',
-      value: 'standard',
-    },
-    {
-      id: '2',
-      label: 'NFC',
-      value: 'nfc',
-    },
-    {
-      id: '3',
-      label: 'Payment',
-      value: 'payment',
-    },
-  ];
-
   const [date, setDate] = useState(new Date());
   const [radioButtons, setRadioButtons] = useState(radioButtonsData);
+  const [alarms, setAlarms] = useState([]);
 
   const {
     control,
@@ -47,7 +58,7 @@ const AlarmForm = ({navigation}) => {
   //   AlarmModuleTest.createAlarmEvent('testName', 'testLocation');
   // };
 
-  function onSubmit(data) {
+  const onSubmit = data => {
     //Initialise alarm object with name, time, stop option
     //and active status
     let alarmProps = {};
@@ -69,22 +80,27 @@ const AlarmForm = ({navigation}) => {
         ', Time ' +
         alarmProps.time,
     );
+    ToastAndroid.show(
+      'Alarm created for ' + alarmProps.name + ' at ' + alarmProps.time,
+      ToastAndroid.SHORT,
+    );
+    console.log(alarms);
 
     //Adds new alarm to array of alarms
+    setAlarms([...alarms, alarmProps]);
 
     //Creates callback function to be triggered at time of alarm
     const currentDate = new Date();
     currentDate.setMinutes(
-      currentDate.getMinutes() - currentDate.getTimezoneOffset(),
+      currentDate.getMinutes() /*- currentDate.getTimezoneOffset()*/,
     );
-
-    setTimeout(triggerAlarm, alarmProps.time - currentDate);
-  }
+    setTimeout(triggerAlarm(selectedStopOption), alarmProps.time - currentDate);
+  };
 
   //Plays sound until nfc tag is scanned
-  async function triggerAlarm() {
+  async function triggerAlarm(stopOption) {
     console.log('set alarm');
-    let _onFinishedPlayingSubscription = SoundPlayer.addEventListener(
+    _onFinishedPlayingSubscription = SoundPlayer.addEventListener(
       'FinishedPlaying',
       ({success}) => {
         console.log('looping sound');
@@ -97,7 +113,6 @@ const AlarmForm = ({navigation}) => {
 
     try {
       // register for the NFC tag with NDEF in it
-
       await NfcManager.requestTechnology(NfcTech.Ndef);
       // the resolved tag object will contain `ndefMessage` property
       const tag = await NfcManager.getTag();
@@ -113,11 +128,6 @@ const AlarmForm = ({navigation}) => {
       NfcManager.cancelTechnologyRequest();
       console.log('closed nfc reader');
     }
-    // NfcManager.setEventListener(NfcEvents.DiscoverTag, tag => {
-    //   console.log('alarm disabled');
-    //   SoundPlayer.stop();
-    // });
-    // await NfcManager.registerTagEvent();
   }
 
   //Renders alarm creation form with controller to fetch data
@@ -164,7 +174,7 @@ const AlarmForm = ({navigation}) => {
             onPress={onChange}
             value={value}
             onBlur={onBlur}
-            containerStyle={styles.radioContainer}
+            style={styles.field}
           />
         )}
         name="stopOption"
@@ -174,23 +184,12 @@ const AlarmForm = ({navigation}) => {
         style={styles.input}
         onPress={handleSubmit(onSubmit)}
       />
-      <Button
-        title="View alarms"
-        style={styles.input}
-        onPress={() => navigation.navigate('Alarms')}
-      />
     </View>
   );
 };
 
 //Styles
 const styles = StyleSheet.create({
-  radioContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    color: 'black',
-    textDecorationColor: 'black',
-  },
   container: {
     alignContent: 'center',
     textAlign: 'center',
