@@ -100,7 +100,7 @@ const AlarmForm = ({navigation}) => {
   //Plays sound until nfc tag is scanned
   async function triggerAlarm() {
     console.log('set alarm');
-    _onFinishedPlayingSubscription = SoundPlayer.addEventListener(
+    let _onFinishedPlayingSubscription = SoundPlayer.addEventListener(
       'FinishedPlaying',
       ({success}) => {
         console.log('looping sound');
