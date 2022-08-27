@@ -7,35 +7,29 @@ import RadioGroup from 'react-native-radio-buttons-group';
 import NfcManager, {NfcTech} from 'react-native-nfc-manager';
 import SoundPlayer from 'react-native-sound-player';
 
-NfcManager.start();
-
-const radioButtonsData = [
-  {
-    id: '1', // acts as primary key, should be unique and non-empty string
-    label: 'Standard',
-    value: 'standard',
-  },
-  {
-    id: '2',
-    label: 'NFC',
-    value: 'nfc',
-  },
-  {
-    id: '3',
-    label: 'Payment',
-    value: 'payment',
-  },
-  {
-    id: '4',
-    label: 'Memory',
-    value: 'memory',
-  },
-];
-
 const AlarmForm = ({navigation}) => {
+  NfcManager.start();
+
+  const radioButtonsData = [
+    {
+      id: '1', // acts as primary key, should be unique and non-empty string
+      label: 'Standard',
+      value: 'standard',
+    },
+    {
+      id: '2',
+      label: 'NFC',
+      value: 'nfc',
+    },
+    {
+      id: '3',
+      label: 'Payment',
+      value: 'payment',
+    },
+  ];
+
   const [date, setDate] = useState(new Date());
   const [radioButtons, setRadioButtons] = useState(radioButtonsData);
-  const [alarms, setAlarms] = useState([]);
 
   const {
     control,
@@ -77,7 +71,6 @@ const AlarmForm = ({navigation}) => {
     );
 
     //Adds new alarm to array of alarms
-    setAlarms([...alarms, alarmProps]);
 
     //Creates callback function to be triggered at time of alarm
     const currentDate = new Date();
@@ -91,7 +84,7 @@ const AlarmForm = ({navigation}) => {
   //Plays sound until nfc tag is scanned
   async function triggerAlarm() {
     console.log('set alarm');
-    _onFinishedPlayingSubscription = SoundPlayer.addEventListener(
+    let _onFinishedPlayingSubscription = SoundPlayer.addEventListener(
       'FinishedPlaying',
       ({success}) => {
         console.log('looping sound');
@@ -104,6 +97,7 @@ const AlarmForm = ({navigation}) => {
 
     try {
       // register for the NFC tag with NDEF in it
+
       await NfcManager.requestTechnology(NfcTech.Ndef);
       // the resolved tag object will contain `ndefMessage` property
       const tag = await NfcManager.getTag();
