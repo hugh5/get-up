@@ -1,48 +1,17 @@
-import React, { Component } from 'react';
-import { Button, StyleSheet, FlatList, View } from 'react-native';
-import { ListItem, Icon } from 'react-native-elements';
+import React, {useState} from 'react';
+import {View, Text, Button} from 'react-native';
 
-const AlarmList = (props) => {
-    let keyExtractor = (item, index) => index.toString();
-    let renderItem = ({ item }) => (
-    <View style={styles.container}>
-      <ListItem
-        title={item.time.toString()}
-        titleStyle={styles.titleStyle}
-        subtitle={item.date.toString()}
-        bottomDivider
-      />
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+
+function AlarmList({navigation}) {
+  return (
+    <View
+      style={{flex: 1, color: 'black', textSize: 20, justifyContent: 'center'}}>
+      <Text>Alarm 1</Text>
+      <Text>Alarm 2</Text>
     </View>
-    );
-    return (
-        <FlatList
-            keyExtractor={keyExtractor}
-            data={props.alarms}
-            renderItem={renderItem}
-        />
-    );
+  );
 }
 
-const styles = StyleSheet.create({
-  container: {},
-  titleStyle: { fontWeight: 'bold', fontSize: 30 },
-});
-
-const mapStateToProps = state => {
-  return {
-    alarms: state.alarms.alarms,
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return {
-    delete: value => {
-      dispatch(deleteAlarm(value));
-    },
-  };
-};
-
-
-
-// eslint-disable-next-line prettier/prettier
-export default connect(mapStateToProps, mapDispatchToProps)(ListAlarms);
+export default AlarmList;

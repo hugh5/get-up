@@ -30,7 +30,7 @@ const radioButtonsData = [
   },
 ];
 
-const AlarmForm = () => {
+const AlarmForm = ({navigation}) => {
   const [date, setDate] = useState(new Date());
   const [radioButtons, setRadioButtons] = useState(radioButtonsData);
 
@@ -96,7 +96,7 @@ const AlarmForm = () => {
         control={control}
         render={({field: {onChange, onBlur, value}}) => (
           <DatePicker
-            textColor="#ffffff"
+            textColor="#000000"
             date={date}
             value={value}
             onDateChange={onChange}
@@ -126,6 +126,11 @@ const AlarmForm = () => {
         style={styles.input}
         onPress={handleSubmit(onSubmit)}
       />
+      <Button
+        title="View alarms"
+        style={styles.input}
+        onPress={() => navigation.navigate('Alarms')}
+      />
     </View>
   );
 };
@@ -135,17 +140,19 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     textAlign: 'center',
     flex: 1,
-    color: 'white',
+    color: 'black',
   },
   field: {
     borderWidth: 2,
     borderColor: 'black',
     margin: 20,
+    color: 'black',
   },
   input: {
     margin: 30,
     width: 200,
     borderColor: 'purple',
+    color: 'black',
   },
 });
 
