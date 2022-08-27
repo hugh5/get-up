@@ -1,19 +1,18 @@
-import {Text, View, SafeAreaView, StyleSheet} from 'react-native';
+import {Text, View, StyleSheet} from 'react-native';
 import React, {Component, useState} from 'react';
 import NewAlarmButton from './NewAlarmButton';
 import AlarmForm from './AlarmForm';
-import AlarmList from './AlarmList'
+import MyStack from './TaskScreen';
 
 export function App() {
   const [showForm, setShowForm] = useState(false);
 
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>Alarm</Text>
+      <Text>Alarm</Text>
       <AlarmForm />
-      <SafeAreaView style={styles.alarmList}>
-        <ListAlarms />
-      </SafeAreaView>
+      <Text>MyStack</Text>
+      <MyStack />
     </View>
   );
 }
@@ -24,15 +23,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  heading: {
-    fontSize: 30,
-    padding: 20,
-  },
-  alarmList: {
-    flex: 1,
-    width: 100,
-  },
-
 });
 
 export default App;
