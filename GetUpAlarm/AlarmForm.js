@@ -4,8 +4,9 @@ import DatePicker from 'react-native-date-picker';
 //import DateTimePicker from '@react-native-community/datetimepicker';
 import {useForm, Controller} from 'react-hook-form';
 import RadioGroup from 'react-native-radio-buttons-group';
-import {setAlarm, cancelAlarm} from 'react-native-alarm-module';
 import AlarmModuleTest from './AlarmModuleTest';
+import NfcManager, {NfcEvents} from 'react-native-nfc-manager';
+import SoundPlayer from 'react-native-sound-player';
 
 const radioButtonsData = [
   {
@@ -15,23 +16,40 @@ const radioButtonsData = [
   },
   {
     id: '2',
-    label: 'NFC',
-    value: 'nfc',
+    label: 'Memory',
+    value: 'memory',
   },
   {
     id: '3',
     label: 'Payment',
     value: 'payment',
   },
-  {
-    id: '4',
-    label: 'Memory',
-    value: 'memory',
-  },
 ];
 
 const AlarmForm = () => {
   const [date, setDate] = useState(new Date());
+  const [hasNfc, setHasNfc] = useState(null);
+
+  React.useEffect(() => {
+    async function checkNfc() {
+      const supported = await NfcManager.isSupported();
+      if (supported) {
+        await NfcManager.start();
+      }
+      setHasNfc(supported);
+    }
+
+    checkNfc();
+  }, []);
+
+  // if (hasNfc) {
+  //   radioButtonsData.push({
+  //     id: '4',
+  //     label: 'NFC',
+  //     value: 'nfc',
+  //   });
+  // }
+
   const [radioButtons, setRadioButtons] = useState(radioButtonsData);
 
   const {
@@ -61,18 +79,39 @@ const AlarmForm = () => {
       data.time.getMinutes() - data.time.getTimezoneOffset(),
     );
     alarmProps.time = data.time;
-    console.log(alarmProps.time.valueOf());
-    createAlarm();
-    /*
-    setAlarm({
-      taskName: alarmProps.name, // required
-      timestamp: alarmProps.time.valueOf(), // required
-      type: 'setAlarmClock', // optional
-      allowedInForeground: true, // optional
-      wakeup: true, // optional
-    });
-    */
+    const currentDate = new Date();
+    currentDate.setMinutes(
+      currentDate.getMinutes() - currentDate.getTimezoneOffset(),
+    );
+
+    setTimeout(triggerAlarm, alarmProps.time - currentDate);
   };
+
+  async function triggerAlarm() {
+    _onFinishedPlayingSubscription = null;
+    console.log('set alarm');
+    _onFinishedPlayingSubscription = SoundPlayer.addEventListener(
+      'FinishedPlaying',
+      ({success}) => {
+        SoundPlayer.playSoundFile('alarm', 'mp3');
+      },
+    );
+    SoundPlayer.playSoundFile('alarm', 'mp3');
+    NfcManager.setEventListener(NfcEvents.DiscoverTag, tag => {
+      console.log('alarm disabled');
+      SoundPlayer.stop();
+    });
+    await NfcManager.registerTagEvent();
+
+    // NfcManager.setEventListener(NfcEvents.DiscoverTag, tag => {
+    //   disabled = true;
+    //   console.log('alarm disabled');
+    // });
+    // await NfcManager.registerTagEvent();
+    //while (!disabled) {
+
+    //}
+  }
 
   return (
     <View style={styles.container}>
@@ -120,7 +159,11 @@ const AlarmForm = () => {
         )}
         name="stopOption"
       />
-      <Button title="create" style={styles.input} onPress={createAlarm} />
+      <Button
+        title="create"
+        style={styles.input}
+        onPress={handleSubmit(onSubmit)}
+      />
     </View>
   );
 };
