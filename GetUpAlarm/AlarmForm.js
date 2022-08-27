@@ -108,6 +108,7 @@ const AlarmForm = ({navigation}) => {
       // the resolved tag object will contain `ndefMessage` property
       const tag = await NfcManager.getTag();
       console.log('alarm disabled', tag);
+      _onFinishedPlayingSubscription.remove();
       SoundPlayer.stop();
       console.log('sound stopped');
     } catch (ex) {
@@ -118,7 +119,6 @@ const AlarmForm = ({navigation}) => {
       NfcManager.cancelTechnologyRequest();
       console.log('closed nfc reader');
     }
-    return;
     // NfcManager.setEventListener(NfcEvents.DiscoverTag, tag => {
     //   console.log('alarm disabled');
     //   SoundPlayer.stop();
