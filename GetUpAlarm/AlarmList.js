@@ -1,21 +1,33 @@
 import React, {useState} from 'react';
-import {View, Text, Button} from 'react-native';
+import {StyleSheet, View, Text, Button} from 'react-native';
 
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 function AlarmList({navigation}) {
   return (
-    <View
-      style={{flex: 1, color: 'black', textSize: 20, justifyContent: 'center'}}>
+    <View>
+      <View style={styles.top}>
+        <Text>Hello</Text>
+      </View>
       <Button
-        title="Create alarm"
+        style={styles.container}
+        title="New Alarm"
         onPress={() => navigation.navigate('Set Alarms')}
       />
-      <Text>Alarm 1</Text>
-      <Text>Alarm 2</Text>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  top: {
+    minHeight: 568,
+    maxHeight: 568,
+  },
+  container: {
+    height: 10,
+    marginTop: 500,
+  },
+});
 
 export default AlarmList;

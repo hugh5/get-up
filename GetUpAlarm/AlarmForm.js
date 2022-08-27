@@ -10,8 +10,7 @@ import React, {useState} from 'react';
 import DatePicker from 'react-native-date-picker';
 import {useForm, Controller} from 'react-hook-form';
 import RadioGroup from 'react-native-radio-buttons-group';
-import AlarmModuleTest from './AlarmModuleTest';
-import NfcManager, {NfcEvents, NfcTech} from 'react-native-nfc-manager';
+import NfcManager, {NfcTech} from 'react-native-nfc-manager';
 import SoundPlayer from 'react-native-sound-player';
 
 const radioButtonsData = [
@@ -58,7 +57,7 @@ const AlarmForm = ({navigation}) => {
   //   AlarmModuleTest.createAlarmEvent('testName', 'testLocation');
   // };
 
-  const onSubmit = data => {
+  function onSubmit(data) {
     //Initialise alarm object with name, time, stop option
     //and active status
     let alarmProps = {};
@@ -92,13 +91,14 @@ const AlarmForm = ({navigation}) => {
     //Creates callback function to be triggered at time of alarm
     const currentDate = new Date();
     currentDate.setMinutes(
-      currentDate.getMinutes() /*- currentDate.getTimezoneOffset()*/,
+      currentDate.getMinutes() - currentDate.getTimezoneOffset(),
     );
-    setTimeout(triggerAlarm(selectedStopOption), alarmProps.time - currentDate);
-  };
+
+    setTimeout(triggerAlarm, alarmProps.time - currentDate);
+  }
 
   //Plays sound until nfc tag is scanned
-  async function triggerAlarm(stopOption) {
+  async function triggerAlarm() {
     console.log('set alarm');
     _onFinishedPlayingSubscription = SoundPlayer.addEventListener(
       'FinishedPlaying',
@@ -128,6 +128,11 @@ const AlarmForm = ({navigation}) => {
       NfcManager.cancelTechnologyRequest();
       console.log('closed nfc reader');
     }
+    // NfcManager.setEventListener(NfcEvents.DiscoverTag, tag => {
+    //   console.log('alarm disabled');
+    //   SoundPlayer.stop();
+    // });
+    // await NfcManager.registerTagEvent();
   }
 
   //Renders alarm creation form with controller to fetch data
@@ -183,6 +188,11 @@ const AlarmForm = ({navigation}) => {
         title="create"
         style={styles.input}
         onPress={handleSubmit(onSubmit)}
+      />
+      <Button
+        title="Cancel"
+        style={styles.input}
+        onPress={() => navigation.navigate('Alarms')}
       />
     </View>
   );

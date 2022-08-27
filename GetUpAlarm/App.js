@@ -1,5 +1,6 @@
-import {Text, View, StyleSheet} from 'react-native';
+import {Text, View, StyleSheet, Button} from 'react-native';
 import React, {Component, useState} from 'react';
+import NfcManager, {NfcTech} from 'react-native-nfc-manager';
 
 import AlarmForm from './AlarmForm';
 import AlarmList from './AlarmList';
@@ -10,6 +11,8 @@ import CreditCardTask from './Tasks/CreditCardTask.js';
 
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+
+NfcManager.start();
 
 const Stack = createNativeStackNavigator();
 
