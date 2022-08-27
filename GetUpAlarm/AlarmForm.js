@@ -6,31 +6,45 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import {useForm, Controller} from 'react-hook-form';
 import { connect } from 'react-redux';
 import {addAlarm, deleteAlarm} from "./actions/alarms"
+import ModalDropdown from 'react-native-modal-dropdown';
+import RadioGroup from 'react-native-radio-buttons-group';
+
+const radioButtonsData = [
+  {
+    id: '1', // acts as primary key, should be unique and non-empty string
+    label: 'Standard',
+    value: 'standard',
+  },
+  {
+    id: '2',
+    label: 'NFC',
+    value: 'nfc',
+  },
+  {
+    id: '3',
+    label: 'Payment',
+    value: 'payment',
+  },
+  {
+    id: '4',
+    label: 'Memory',
+    value: 'memory',
+  },
+];
 
 const AlarmForm = () => {
   const [date, setDate] = useState(new Date());
-  const [mode, setMode] = useState('time');
-  const [showDate, setShowDate] = useState(false);
-  const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(null);
-  const [label, setLabel] = useState(null);
-  const [items, setItems] = useState([
-    {label: 'Standard', value: 'standard'},
-    {label: 'NFC', value: 'nfc'},
-    {label: 'Payment', value: 'payment'},
-    {label: 'Memory', value: 'memory'},
-  ]);
+  const [radioButtons, setRadioButtons] = useState(radioButtonsData);
 
   const {
     control,
     handleSubmit,
     formState: {errors},
-    reset,
   } = useForm({
     defaultValues: {
       name: '',
       time: new Date(),
-      stopOption: 'standard',
+      stopOption: null,
     },
   });
 
@@ -53,46 +67,51 @@ const AlarmForm = () => {
     <View style={styles.container}>
       <Controller
         control={control}
-        name="name"
         rules={{required: true}}
-        render={({onChange, value}) => (
-          <TextInput style={styles.field} placeholder="Name" value={value} />
+        render={({field: {onChange, onBlur, value}}) => (
+          <TextInput
+            style={styles.field}
+            placeholder="Name"
+            value={value}
+            onBlur={onBlur}
+            onChangeText={onChange}
+          />
         )}
+        name="name"
       />
       {errors.name && <Text>required.</Text>}
       <Controller
         control={control}
-        name="time"
-        render={({onChange, value}) => (
+        render={({field: {onChange, onBlur, value}}) => (
           <DatePicker
             textColor="#ffffff"
             date={date}
-            onDateChange={setDate}
+            value={value}
+            onDateChange={onChange}
+            onBlur={onBlur}
             mode="time"
             androidVariant="nativeAndroid"
             fadeToColor="none"
           />
         )}
+        name="time"
       />
       <Controller
         control={control}
-        name="stopOption"
-        render={({onChange, value}) => (
-          <DropDownPicker
-            open={open}
+        render={({field: {onChange, onBlur, value}}) => (
+          <RadioGroup
+            radioButtons={radioButtons}
+            onPress={onChange}
             value={value}
-            items={items}
-            setOpen={setOpen}
-            setValue={setValue}
-            setItems={setItems}
-            style={styles.input}
+            onBlur={onBlur}
           />
         )}
+        name="stopOption"
       />
       <Button
         title="create"
         style={styles.input}
-        onPress={() => handleSubmit(submit)}
+        onPress={handleSubmit(onSubmit)}
       />
     </View>
   );

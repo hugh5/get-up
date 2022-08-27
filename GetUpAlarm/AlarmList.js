@@ -1,21 +1,26 @@
 import React, { Component } from 'react';
 import { Button, StyleSheet, FlatList, View } from 'react-native';
 import { ListItem, Icon } from 'react-native-elements';
-import ReactNativeAN from 'react-native-alarm-notification';
 
-const AlarmList = () => {
+const AlarmList = (props) => {
+    let keyExtractor = (item, index) => index.toString();
+    let renderItem = ({ item }) => (
+    <View style={styles.container}>
+      <ListItem
+        title={item.time.toString()}
+        titleStyle={styles.titleStyle}
+        subtitle={item.date.toString()}
+        bottomDivider
+      />
+    </View>
+    );
     return (
-        <View>
-            <ListItem>
-                <ListItem.Content>
-                    <ListItem.Title style={styles.titleStyle}></ListItem.Title>
-                    <ListItem.Subtitle>8/21/2021</ListItem.Subtitle>
-                </ListItem.Content>
-            </ListItem>
-        </View>
-
-    )
- 
+        <FlatList
+            keyExtractor={keyExtractor}
+            data={props.alarms}
+            renderItem={renderItem}
+        />
+    );
 }
 
 const styles = StyleSheet.create({
@@ -36,6 +41,8 @@ const mapDispatchToProps = dispatch => {
     },
   };
 };
+
+
 
 // eslint-disable-next-line prettier/prettier
 export default connect(mapStateToProps, mapDispatchToProps)(ListAlarms);
