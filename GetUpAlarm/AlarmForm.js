@@ -6,6 +6,7 @@ import {useForm, Controller} from 'react-hook-form';
 import RadioGroup from 'react-native-radio-buttons-group';
 import NfcManager, {NfcTech} from 'react-native-nfc-manager';
 import SoundPlayer from 'react-native-sound-player';
+import {AlarmModuleTest} from './AlarmModuleTest';
 
 NfcManager.start();
 
@@ -181,9 +182,9 @@ const AlarmForm = ({navigation}) => {
         onPress={handleSubmit(onSubmit)}
       />
       <Button
-        title="View alarms"
+        title="Cancel"
         style={styles.input}
-        onPress={() => navigation.navigate('Alarms')}
+        onPress={() => navigation.navigate('Task')}
       />
     </View>
   );
