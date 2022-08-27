@@ -3,12 +3,9 @@ import React, {useState} from 'react';
 import DatePicker from 'react-native-date-picker';
 //import DateTimePicker from '@react-native-community/datetimepicker';
 import {useForm, Controller} from 'react-hook-form';
-import {connect} from 'react-redux';
-import {addAlarm, deleteAlarm} from './actions/alarms';
-import ModalDropdown from 'react-native-modal-dropdown';
 import RadioGroup from 'react-native-radio-buttons-group';
 import {setAlarm, cancelAlarm} from 'react-native-alarm-module';
-import Alarm from 'react-native-alarm-manager';
+import AlarmModuleTest from './AlarmModuleTest';
 
 const radioButtonsData = [
   {
@@ -49,20 +46,9 @@ const AlarmForm = () => {
     },
   });
 
-  function makeid() {
-    let length = 5;
-    let result = '';
-    let characters = '0123456789';
-    let charactersLength = characters.length;
-    for (let i = 0; i < length; i++) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-    }
-    return result;
-  }
-
-  function submit(data) {
-    console.log(data);
-  }
+  const createAlarm = () => {
+    AlarmModuleTest.createAlarmEvent('testName', 'testLocation');
+  };
 
   const onSubmit = data => {
     let alarmProps = {};
@@ -75,11 +61,17 @@ const AlarmForm = () => {
       data.time.getMinutes() - data.time.getTimezoneOffset(),
     );
     alarmProps.time = data.time;
-    const currentDate = new Date();
-    currentDate.setMinutes(
-      currentDate.getMinutes() - currentDate.getTimezoneOffset(),
-    );
-    setTimeout(triggerAlarm, alarmProps.time - currentDate);
+    console.log(alarmProps.time.valueOf());
+    createAlarm();
+    /*
+    setAlarm({
+      taskName: alarmProps.name, // required
+      timestamp: alarmProps.time.valueOf(), // required
+      type: 'setAlarmClock', // optional
+      allowedInForeground: true, // optional
+      wakeup: true, // optional
+    });
+    */
   };
 
   return (
@@ -128,11 +120,7 @@ const AlarmForm = () => {
         )}
         name="stopOption"
       />
-      <Button
-        title="create"
-        style={styles.input}
-        onPress={handleSubmit(onSubmit)}
-      />
+      <Button title="create" style={styles.input} onPress={createAlarm} />
     </View>
   );
 };
@@ -156,16 +144,4 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = state => {
-  return {};
-};
-
-const mapDispatchToProps = dispatch => {
-  return {
-    add: alarmNotifObj => {
-      dispatch(deleteAlarm(alarmNotifObj));
-    },
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(AlarmForm);
+export default AlarmForm;
