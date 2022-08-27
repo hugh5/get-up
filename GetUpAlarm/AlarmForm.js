@@ -3,6 +3,9 @@ import React, {useState} from 'react';
 import DatePicker from 'react-native-date-picker';
 //import DateTimePicker from '@react-native-community/datetimepicker';
 import {useForm, Controller} from 'react-hook-form';
+import { connect } from 'react-redux';
+import {addAlarm, deleteAlarm} from "./actions/alarms"
+import ModalDropdown from 'react-native-modal-dropdown';
 import RadioGroup from 'react-native-radio-buttons-group';
 import {setAlarm, cancelAlarm} from 'react-native-alarm-module';
 
@@ -45,6 +48,21 @@ const AlarmForm = () => {
     },
   });
 
+  function makeid() {
+    let length = 5;
+    let result = '';
+    let characters = '0123456789';
+    let charactersLength = characters.length;
+    for (let i = 0; i < length; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+  }
+
+  function submit(data) {
+    console.log(data);
+  }
+
   const onSubmit = data => {
     let alarmProps = {};
     alarmProps.name = data.name;
@@ -65,6 +83,7 @@ const AlarmForm = () => {
       wakeup: true, // optional
     });
   };
+
 
   return (
     <View style={styles.container}>
@@ -140,4 +159,16 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AlarmForm;
+const mapStateToProps = state => {
+  return {};
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    add: alarmNotifObj => {
+      dispatch(deleteAlarm(alarmNotifObj));
+    },
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps) (AlarmForm);
