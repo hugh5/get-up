@@ -170,7 +170,7 @@ const AlarmForm = ({navigation}) => {
             onPress={onChange}
             value={value}
             onBlur={onBlur}
-            stytle={styles.field}
+            containerStyle={styles.radioContainer}
           />
         )}
         name="stopOption"
@@ -191,6 +191,12 @@ const AlarmForm = ({navigation}) => {
 
 //Styles
 const styles = StyleSheet.create({
+  radioContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    color: 'black',
+    textDecorationColor: 'black',
+  },
   container: {
     alignContent: 'center',
     textAlign: 'center',
