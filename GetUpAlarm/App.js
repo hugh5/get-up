@@ -1,14 +1,15 @@
 import {Text, View, StyleSheet} from 'react-native';
 import React, {Component, useState} from 'react';
 
-import NewAlarmButton from './NewAlarmButton';
 import AlarmForm from './AlarmForm';
-// import MyStack from './TaskScreen';
 import AlarmList from './AlarmList';
+import StandardTask from './Tasks/StandardTask';
+import NfcTask from './Tasks/NfcTask';
+import MemoryTask from './Tasks/MemoryTask';
+import CreditCardTask from './Tasks/CreditCardTask.js';
 
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import TaskScreen from './TaskScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -18,10 +19,13 @@ export function App() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Task">
+      <Stack.Navigator initialRouteName="Alarms">
         <Stack.Screen name="Set Alarms" component={AlarmForm} />
-        <Stack.Screen name="Task" component={TaskScreen} />
         <Stack.Screen name="Alarms" component={AlarmList} />
+        <Stack.Screen name="Standard Alarm" component={StandardTask} />
+        <Stack.Screen name="NFC Alarm" component={NfcTask} />
+        <Stack.Screen name="Payment Alarm" component={CreditCardTask} />
+        <Stack.Screen name="Memory Alarm" component={MemoryTask} />
       </Stack.Navigator>
     </NavigationContainer>
   );

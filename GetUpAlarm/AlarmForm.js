@@ -1,7 +1,13 @@
-import {View, Text, TextInput, StyleSheet, Button} from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  Button,
+  ToastAndroid,
+} from 'react-native';
 import React, {useState} from 'react';
 import DatePicker from 'react-native-date-picker';
-//import DateTimePicker from '@react-native-community/datetimepicker';
 import {useForm, Controller} from 'react-hook-form';
 import RadioGroup from 'react-native-radio-buttons-group';
 import AlarmModuleTest from './AlarmModuleTest';
@@ -74,6 +80,10 @@ const AlarmForm = ({navigation}) => {
         ', Time ' +
         alarmProps.time,
     );
+    ToastAndroid.show(
+      'Alarm created for ' + alarmProps.name + ' at ' + alarmProps.time,
+      ToastAndroid.SHORT,
+    );
     console.log(alarms);
 
     //Adds new alarm to array of alarms
@@ -82,41 +92,42 @@ const AlarmForm = ({navigation}) => {
     //Creates callback function to be triggered at time of alarm
     const currentDate = new Date();
     currentDate.setMinutes(
-      currentDate.getMinutes() - currentDate.getTimezoneOffset(),
+      currentDate.getMinutes() /*- currentDate.getTimezoneOffset()*/,
     );
-    setTimeout(triggerAlarm, alarmProps.time - currentDate);
+    setTimeout(triggerAlarm(selectedStopOption), alarmProps.time - currentDate);
   };
 
   //Plays sound until nfc tag is scanned
-  async function triggerAlarm() {
-    _onFinishedPlayingSubscription = null;
+  async function triggerAlarm(stopOption) {
     console.log('set alarm');
     _onFinishedPlayingSubscription = SoundPlayer.addEventListener(
       'FinishedPlaying',
       ({success}) => {
+        console.log('looping sound');
         SoundPlayer.playSoundFile('alarm', 'mp3');
       },
     );
+    console.log('playing sound');
     SoundPlayer.playSoundFile('alarm', 'mp3');
+    console.log('initialising nfc reader');
 
     try {
       // register for the NFC tag with NDEF in it
       await NfcManager.requestTechnology(NfcTech.Ndef);
       // the resolved tag object will contain `ndefMessage` property
       const tag = await NfcManager.getTag();
-      console.log('alarm disabled');
+      console.log('alarm disabled', tag);
+      _onFinishedPlayingSubscription.remove();
       SoundPlayer.stop();
+      console.log('sound stopped');
     } catch (ex) {
       console.warn('Oops!', ex);
     } finally {
       // stop the nfc scanning
+      console.log('closing nfc reader');
       NfcManager.cancelTechnologyRequest();
+      console.log('closed nfc reader');
     }
-    // NfcManager.setEventListener(NfcEvents.DiscoverTag, tag => {
-    //   console.log('alarm disabled');
-    //   SoundPlayer.stop();
-    // });
-    // await NfcManager.registerTagEvent();
   }
 
   //Renders alarm creation form with controller to fetch data
@@ -163,7 +174,7 @@ const AlarmForm = ({navigation}) => {
             onPress={onChange}
             value={value}
             onBlur={onBlur}
-            stytle={styles.field}
+            style={styles.field}
           />
         )}
         name="stopOption"
@@ -172,11 +183,6 @@ const AlarmForm = ({navigation}) => {
         title="create"
         style={styles.input}
         onPress={handleSubmit(onSubmit)}
-      />
-      <Button
-        title="View alarms"
-        style={styles.input}
-        onPress={() => navigation.navigate('Alarms')}
       />
     </View>
   );

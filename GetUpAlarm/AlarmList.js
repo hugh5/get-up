@@ -8,6 +8,10 @@ function AlarmList({navigation}) {
   return (
     <View
       style={{flex: 1, color: 'black', textSize: 20, justifyContent: 'center'}}>
+      <Button
+        title="Create alarm"
+        onPress={() => navigation.navigate('Set Alarms')}
+      />
       <Text>Alarm 1</Text>
       <Text>Alarm 2</Text>
     </View>
