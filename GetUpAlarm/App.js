@@ -20,7 +20,7 @@ export function App() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Task">
+      <Stack.Navigator initialRouteName="Alarms">
         <Stack.Screen name="Set Alarms" component={AlarmForm} />
         <Stack.Screen name="Task" component={TaskScreen} />
         <Stack.Screen name="Alarms" component={AlarmList} />

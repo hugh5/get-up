@@ -184,7 +184,7 @@ const AlarmForm = ({navigation}) => {
       <Button
         title="Cancel"
         style={styles.input}
-        onPress={() => navigation.navigate('Task')}
+        onPress={() => navigation.navigate('Alarms')}
       />
     </View>
   );
