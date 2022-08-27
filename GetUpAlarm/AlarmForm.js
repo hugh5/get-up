@@ -6,7 +6,6 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import {useForm, Controller} from 'react-hook-form';
 import { connect } from 'react-redux';
 import {addAlarm, deleteAlarm} from "./actions/alarms"
-import ReactNativeAN from 'react-native-alarm-notification'
 
 const AlarmForm = () => {
   const [date, setDate] = useState(new Date());
@@ -48,8 +47,6 @@ const AlarmForm = () => {
 
   function submit(data) {
     console.log(data);
-    var currentTime = 
-
   }
 
   return (

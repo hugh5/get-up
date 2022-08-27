@@ -16,7 +16,7 @@ const alarmReducer = (state = initialState, action) => {
             console.log(time);
             const alarm = {
                 alarmmNotifications: payload,
-                value: payload.data,
+                value: payload.data.value,
                 time: time,
                 date: date,
             };
