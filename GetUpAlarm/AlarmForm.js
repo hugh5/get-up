@@ -58,11 +58,12 @@ const AlarmForm = () => {
     );
     alarmProps.stopOption = data.stopOption[selectedStopOption].value;
     data.time.setMinutes(
-      data.time.getMinutes() - data.time.getTimezoneOffset(),
+      data.time.getMinutes() /* data.time.getTimezoneOffset()*/,
     );
     alarmProps.time = data.time;
-    console.log(alarmProps.time.valueOf());
-    createAlarm();
+    console.log('Alarm created. Name ' + alarmProps.name + ", Stop option " + alarmProps.stopOption + ", Time " + alarmProps.time);
+
+    // createAlarm();
     /*
     setAlarm({
       taskName: alarmProps.name, // required
@@ -120,7 +121,11 @@ const AlarmForm = () => {
         )}
         name="stopOption"
       />
-      <Button title="create" style={styles.input} onPress={createAlarm} />
+      <Button
+        title="create"
+        style={styles.input}
+        onPress={handleSubmit(onSubmit)}
+      />
     </View>
   );
 };
