@@ -89,7 +89,6 @@ const AlarmForm = () => {
 
   async function triggerAlarm() {
     _onFinishedPlayingSubscription = null;
-    let disabled = false;
     console.log('set alarm');
     _onFinishedPlayingSubscription = SoundPlayer.addEventListener(
       'FinishedPlaying',
@@ -98,10 +97,11 @@ const AlarmForm = () => {
       },
     );
     SoundPlayer.playSoundFile('alarm', 'mp3');
-    NfcManager.addEventListener(NfcEvents.DiscoverTag, tag => {
+    NfcManager.setEventListener(NfcEvents.DiscoverTag, tag => {
       console.log('alarm disabled');
-      disabled = true;
+      SoundPlayer.stop();
     });
+    await NfcManager.registerTagEvent();
 
     // NfcManager.setEventListener(NfcEvents.DiscoverTag, tag => {
     //   disabled = true;
