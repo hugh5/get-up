@@ -6,6 +6,8 @@ import {useForm, Controller} from 'react-hook-form';
 import RadioGroup from 'react-native-radio-buttons-group';
 import NfcManager, {NfcTech} from 'react-native-nfc-manager';
 import SoundPlayer from 'react-native-sound-player';
+import {AlarmModuleTest} from './AlarmModuleTest';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const AlarmForm = ({navigation}) => {
   NfcManager.start();
@@ -27,6 +29,15 @@ const AlarmForm = ({navigation}) => {
       value: 'payment',
     },
   ];
+
+  const storeData = async value => {
+    try {
+      const jsonValue = JSON.stringify(value);
+      await AsyncStorage.setItem('@storage_Key', jsonValue);
+    } catch (e) {
+      // saving error
+    }
+  };
 
   const [date, setDate] = useState(new Date());
   const [radioButtons, setRadioButtons] = useState(radioButtonsData);
@@ -61,6 +72,7 @@ const AlarmForm = ({navigation}) => {
     );
     alarmProps.time = data.time;
     alarmProps.active = true;
+    storeData(alarmProps);
     console.log(
       'Alarm created. Name ' +
         alarmProps.name +
@@ -175,7 +187,7 @@ const AlarmForm = ({navigation}) => {
         onPress={handleSubmit(onSubmit)}
       />
       <Button
-        title="View alarms"
+        title="Cancel"
         style={styles.input}
         onPress={() => navigation.navigate('Alarms')}
       />
