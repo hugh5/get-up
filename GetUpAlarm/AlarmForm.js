@@ -34,6 +34,7 @@ const radioButtonsData = [
 const AlarmForm = ({navigation}) => {
   const [date, setDate] = useState(new Date());
   const [radioButtons, setRadioButtons] = useState(radioButtonsData);
+  const [alarms, setAlarms] = useState([]);
 
   const {
     control,
@@ -47,9 +48,9 @@ const AlarmForm = ({navigation}) => {
     },
   });
 
-  const createAlarm = () => {
-    AlarmModuleTest.createAlarmEvent('testName', 'testLocation');
-  };
+  // const createAlarm = () => {
+  //   AlarmModuleTest.createAlarmEvent('testName', 'testLocation');
+  // };
 
   const onSubmit = data => {
     let alarmProps = {};
@@ -62,6 +63,7 @@ const AlarmForm = ({navigation}) => {
       data.time.getMinutes() - data.time.getTimezoneOffset(),
     );
     alarmProps.time = data.time;
+    alarmProps.active = true;
     console.log(
       'Alarm created. Name ' +
         alarmProps.name +
@@ -70,14 +72,19 @@ const AlarmForm = ({navigation}) => {
         ', Time ' +
         alarmProps.time,
     );
+
+    //Adds new alarm to array of alarms
+    setAlarms([...alarms, alarmProps]);
+
+    //Creates callback function to be triggered at time of alarm
     const currentDate = new Date();
     currentDate.setMinutes(
       currentDate.getMinutes() - currentDate.getTimezoneOffset(),
     );
-
     setTimeout(triggerAlarm, alarmProps.time - currentDate);
   };
 
+  //Plays sound until nfc tag is scanned
   async function triggerAlarm() {
     _onFinishedPlayingSubscription = null;
     console.log('set alarm');
@@ -93,17 +100,6 @@ const AlarmForm = ({navigation}) => {
       SoundPlayer.stop();
     });
     await NfcManager.registerTagEvent();
-
-    // createAlarm();
-    /*
-    setAlarm({
-      taskName: alarmProps.name, // required
-      timestamp: alarmProps.time.valueOf(), // required
-      type: 'setAlarmClock', // optional
-      allowedInForeground: true, // optional
-      wakeup: true, // optional
-    });
-    */
   }
 
   return (
