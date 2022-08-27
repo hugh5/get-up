@@ -2,10 +2,9 @@ import {View, Text, TextInput, StyleSheet, Button} from 'react-native';
 import React, {useState} from 'react';
 import DatePicker from 'react-native-date-picker';
 //import DateTimePicker from '@react-native-community/datetimepicker';
-import DropDownPicker from 'react-native-dropdown-picker';
 import {useForm, Controller} from 'react-hook-form';
-import ModalDropdown from 'react-native-modal-dropdown';
 import RadioGroup from 'react-native-radio-buttons-group';
+import {setAlarm, cancelAlarm} from 'react-native-alarm-module';
 
 const radioButtonsData = [
   {
@@ -45,15 +44,26 @@ const AlarmForm = () => {
       stopOption: null,
     },
   });
+
   const onSubmit = data => {
-    let alarm = {};
-    alarm.name = data.name;
+    let alarmProps = {};
+    alarmProps.name = data.name;
     const selectedStopOption = data.stopOption.findIndex(
       option => option.selected === true,
     );
-    alarm.stopOption = data.stopOption[selectedStopOption].value;
-    alarm.time = data.time + data.time.getTimezoneOffset();
-    console.log(alarm);
+    alarmProps.stopOption = data.stopOption[selectedStopOption].value;
+    data.time.setMinutes(
+      data.time.getMinutes() - data.time.getTimezoneOffset(),
+    );
+    alarmProps.time = data.time;
+    console.log(alarmProps.time.valueOf());
+    setAlarm({
+      taskName: alarmProps.name, // required
+      timestamp: alarmProps.time.valueOf(), // required
+      type: 'setAlarmClock', // optional
+      allowedInForeground: true, // optional
+      wakeup: true, // optional
+    });
   };
 
   return (
