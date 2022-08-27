@@ -1,7 +1,13 @@
-import {View, Text, TextInput, StyleSheet, Button} from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  Button,
+  ToastAndroid,
+} from 'react-native';
 import React, {useState} from 'react';
 import DatePicker from 'react-native-date-picker';
-//import DateTimePicker from '@react-native-community/datetimepicker';
 import {useForm, Controller} from 'react-hook-form';
 import RadioGroup from 'react-native-radio-buttons-group';
 import NfcManager, {NfcTech} from 'react-native-nfc-manager';
@@ -36,7 +42,6 @@ const radioButtonsData = [
 const AlarmForm = ({navigation}) => {
   const [date, setDate] = useState(new Date());
   const [radioButtons, setRadioButtons] = useState(radioButtonsData);
-  const [alarms, setAlarms] = useState([]);
 
   const {
     control,
@@ -46,7 +51,7 @@ const AlarmForm = ({navigation}) => {
     defaultValues: {
       name: '',
       time: new Date(),
-      stopOption: radioButtons,
+      stopOption: null,
     },
   });
 
@@ -68,6 +73,7 @@ const AlarmForm = ({navigation}) => {
     );
     alarmProps.time = data.time;
     alarmProps.active = true;
+    storeData(alarmProps);
     console.log(
       'Alarm created. Name ' +
         alarmProps.name +
@@ -76,6 +82,11 @@ const AlarmForm = ({navigation}) => {
         ', Time ' +
         alarmProps.time,
     );
+    ToastAndroid.show(
+      'Alarm created for ' + alarmProps.name + ' at ' + alarmProps.time,
+      ToastAndroid.SHORT,
+    );
+    console.log(alarms);
 
     //Adds new alarm to array of alarms
     setAlarms([...alarms, alarmProps]);
@@ -93,7 +104,7 @@ const AlarmForm = ({navigation}) => {
   //Plays sound until nfc tag is scanned
   async function triggerAlarm() {
     console.log('set alarm');
-    _onFinishedPlayingSubscription = SoundPlayer.addEventListener(
+    let _onFinishedPlayingSubscription = SoundPlayer.addEventListener(
       'FinishedPlaying',
       ({success}) => {
         console.log('looping sound');
@@ -147,7 +158,6 @@ const AlarmForm = ({navigation}) => {
         name="name"
       />
       {errors.name && <Text>required.</Text>}
-
       <Controller
         control={control}
         render={({field: {onChange, onBlur, value}}) => (

@@ -19,15 +19,4 @@ const TaskScreen = ({navigation}) => {
   );
 };
 
-const styles = StyleSheet.create({
-  top: {
-    minHeight: 568,
-    maxHeight: 568,
-  },
-  container: {
-    height: 10,
-    marginTop: 500,
-  },
-});
-
 export default TaskScreen;
