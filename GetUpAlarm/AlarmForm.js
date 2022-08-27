@@ -4,6 +4,9 @@ import DatePicker from 'react-native-date-picker';
 //import DateTimePicker from '@react-native-community/datetimepicker';
 import DropDownPicker from 'react-native-dropdown-picker';
 import {useForm, Controller} from 'react-hook-form';
+import { connect } from 'react-redux';
+import {addAlarm, deleteAlarm} from "./actions/alarms"
+import ReactNativeAN from 'react-native-alarm-notification'
 
 const AlarmForm = () => {
   const [date, setDate] = useState(new Date());
@@ -32,8 +35,21 @@ const AlarmForm = () => {
     },
   });
 
+  function makeid() {
+    let length = 5;
+    let result = '';
+    let characters = '0123456789';
+    let charactersLength = characters.length;
+    for (let i = 0; i < length; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+  }
+
   function submit(data) {
     console.log(data);
+    var currentTime = 
+
   }
 
   return (
@@ -104,4 +120,16 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AlarmForm;
+const mapStateToProps = state => {
+  return {};
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    add: alarmNotifObj => {
+      dispatch(deleteAlarm(alarmNotifObj));
+    },
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps) (AlarmForm);
