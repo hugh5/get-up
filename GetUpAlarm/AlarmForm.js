@@ -1,44 +1,45 @@
-import {View, Text, TextInput, StyleSheet, Button} from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  Button,
+  ToastAndroid,
+} from 'react-native';
 import React, {useState} from 'react';
 import DatePicker from 'react-native-date-picker';
-//import DateTimePicker from '@react-native-community/datetimepicker';
 import {useForm, Controller} from 'react-hook-form';
 import RadioGroup from 'react-native-radio-buttons-group';
 import NfcManager, {NfcTech} from 'react-native-nfc-manager';
 import SoundPlayer from 'react-native-sound-player';
 import {AlarmModuleTest} from './AlarmModuleTest';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+
+NfcManager.start();
+
+const radioButtonsData = [
+  {
+    id: '1', // acts as primary key, should be unique and non-empty string
+    label: 'Standard',
+    value: 'standard',
+  },
+  {
+    id: '2',
+    label: 'NFC',
+    value: 'nfc',
+  },
+  {
+    id: '3',
+    label: 'Payment',
+    value: 'payment',
+  },
+  {
+    id: '4',
+    label: 'Memory',
+    value: 'memory',
+  },
+];
 
 const AlarmForm = ({navigation}) => {
-  NfcManager.start();
-
-  const radioButtonsData = [
-    {
-      id: '1', // acts as primary key, should be unique and non-empty string
-      label: 'Standard',
-      value: 'standard',
-    },
-    {
-      id: '2',
-      label: 'NFC',
-      value: 'nfc',
-    },
-    {
-      id: '3',
-      label: 'Payment',
-      value: 'payment',
-    },
-  ];
-
-  const storeData = async value => {
-    try {
-      const jsonValue = JSON.stringify(value);
-      await AsyncStorage.setItem('@storage_Key', jsonValue);
-    } catch (e) {
-      // saving error
-    }
-  };
-
   const [date, setDate] = useState(new Date());
   const [radioButtons, setRadioButtons] = useState(radioButtonsData);
 
@@ -81,6 +82,11 @@ const AlarmForm = ({navigation}) => {
         ', Time ' +
         alarmProps.time,
     );
+    ToastAndroid.show(
+      'Alarm created for ' + alarmProps.name + ' at ' + alarmProps.time,
+      ToastAndroid.SHORT,
+    );
+    console.log(alarms);
 
     //Adds new alarm to array of alarms
 
@@ -176,7 +182,7 @@ const AlarmForm = ({navigation}) => {
             onPress={onChange}
             value={value}
             onBlur={onBlur}
-            containerStyle={styles.radioContainer}
+            stytle={styles.field}
           />
         )}
         name="stopOption"
