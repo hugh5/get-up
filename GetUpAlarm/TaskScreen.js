@@ -8,7 +8,7 @@ const TaskScreen = ({navigation}) => {
   return (
     <View>
       <Text>Hello</Text>
-      <Button title="Button" onPress={() => navigation.navigate('Set Alarm')} />
+      <Button title="Button" onPress={() => navigation.navigate('Set Alarms')} />
     </View>
   );
 };
