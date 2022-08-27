@@ -46,7 +46,7 @@ const AlarmForm = ({navigation}) => {
     defaultValues: {
       name: '',
       time: new Date(),
-      stopOption: null,
+      stopOption: radioButtons,
     },
   });
 
@@ -85,6 +85,7 @@ const AlarmForm = ({navigation}) => {
     currentDate.setMinutes(
       currentDate.getMinutes() - currentDate.getTimezoneOffset(),
     );
+    navigation.navigate('Alarms');
 
     setTimeout(triggerAlarm, alarmProps.time - currentDate);
   }
@@ -146,6 +147,7 @@ const AlarmForm = ({navigation}) => {
         name="name"
       />
       {errors.name && <Text>required.</Text>}
+
       <Controller
         control={control}
         render={({field: {onChange, onBlur, value}}) => (
@@ -158,6 +160,7 @@ const AlarmForm = ({navigation}) => {
             mode="time"
             androidVariant="nativeAndroid"
             fadeToColor="none"
+            style={styles.field}
           />
         )}
         name="time"
@@ -171,19 +174,15 @@ const AlarmForm = ({navigation}) => {
             onPress={onChange}
             value={value}
             onBlur={onBlur}
-            stytle={styles.field}
+            containerStyle={styles.radioContainer}
           />
         )}
         name="stopOption"
       />
-      <Button
-        title="create"
-        style={styles.input}
-        onPress={handleSubmit(onSubmit)}
-      />
+      <Button title="create" color="" onPress={handleSubmit(onSubmit)} />
       <Button
         title="Cancel"
-        style={styles.input}
+        color="red"
         onPress={() => navigation.navigate('Alarms')}
       />
     </View>
@@ -192,6 +191,13 @@ const AlarmForm = ({navigation}) => {
 
 //Styles
 const styles = StyleSheet.create({
+  radioContainer: {
+    flex: 1,
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    marginLeft: '35%',
+    marginTop: '5%',
+  },
   container: {
     alignContent: 'center',
     textAlign: 'center',
@@ -200,8 +206,13 @@ const styles = StyleSheet.create({
   },
   field: {
     borderWidth: 2,
+    borderRadius: 10,
     borderColor: 'black',
-    margin: 20,
+    alignContent: 'flex-end',
+    marginHorizontal: '5%',
+    marginVertical: '3%',
+    minWidth: '90%',
+    padding: 10,
     color: 'black',
   },
   input: {
