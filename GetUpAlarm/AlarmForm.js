@@ -2,12 +2,12 @@ import {View, Text, TextInput, StyleSheet, Button} from 'react-native';
 import React, {useState} from 'react';
 import DatePicker from 'react-native-date-picker';
 //import DateTimePicker from '@react-native-community/datetimepicker';
-import DropDownPicker from 'react-native-dropdown-picker';
 import {useForm, Controller} from 'react-hook-form';
 import { connect } from 'react-redux';
 import {addAlarm, deleteAlarm} from "./actions/alarms"
 import ModalDropdown from 'react-native-modal-dropdown';
 import RadioGroup from 'react-native-radio-buttons-group';
+import {setAlarm, cancelAlarm} from 'react-native-alarm-module';
 
 const radioButtonsData = [
   {
@@ -63,6 +63,28 @@ const AlarmForm = () => {
     console.log(data);
   }
 
+  const onSubmit = data => {
+    let alarmProps = {};
+    alarmProps.name = data.name;
+    const selectedStopOption = data.stopOption.findIndex(
+      option => option.selected === true,
+    );
+    alarmProps.stopOption = data.stopOption[selectedStopOption].value;
+    data.time.setMinutes(
+      data.time.getMinutes() - data.time.getTimezoneOffset(),
+    );
+    alarmProps.time = data.time;
+    console.log(alarmProps.time.valueOf());
+    setAlarm({
+      taskName: alarmProps.name, // required
+      timestamp: alarmProps.time.valueOf(), // required
+      type: 'setAlarmClock', // optional
+      allowedInForeground: true, // optional
+      wakeup: true, // optional
+    });
+  };
+
+
   return (
     <View style={styles.container}>
       <Controller
@@ -98,6 +120,7 @@ const AlarmForm = () => {
       />
       <Controller
         control={control}
+        rules={{required: true}}
         render={({field: {onChange, onBlur, value}}) => (
           <RadioGroup
             radioButtons={radioButtons}
