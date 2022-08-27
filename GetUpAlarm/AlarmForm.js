@@ -6,7 +6,6 @@ import {useForm, Controller} from 'react-hook-form';
 import RadioGroup from 'react-native-radio-buttons-group';
 import NfcManager, {NfcTech} from 'react-native-nfc-manager';
 import SoundPlayer from 'react-native-sound-player';
-import {AlarmModuleTest} from './AlarmModuleTest';
 
 NfcManager.start();
 
@@ -46,7 +45,7 @@ const AlarmForm = ({navigation}) => {
     defaultValues: {
       name: '',
       time: new Date(),
-      stopOption: radioButtons,
+      stopOption: null,
     },
   });
 
@@ -85,7 +84,6 @@ const AlarmForm = ({navigation}) => {
     currentDate.setMinutes(
       currentDate.getMinutes() - currentDate.getTimezoneOffset(),
     );
-    navigation.navigate('Alarms');
 
     setTimeout(triggerAlarm, alarmProps.time - currentDate);
   }
@@ -147,7 +145,6 @@ const AlarmForm = ({navigation}) => {
         name="name"
       />
       {errors.name && <Text>required.</Text>}
-
       <Controller
         control={control}
         render={({field: {onChange, onBlur, value}}) => (
@@ -160,7 +157,6 @@ const AlarmForm = ({navigation}) => {
             mode="time"
             androidVariant="nativeAndroid"
             fadeToColor="none"
-            style={styles.field}
           />
         )}
         name="time"
@@ -179,10 +175,14 @@ const AlarmForm = ({navigation}) => {
         )}
         name="stopOption"
       />
-      <Button title="create" color="" onPress={handleSubmit(onSubmit)} />
       <Button
-        title="Cancel"
-        color="red"
+        title="create"
+        style={styles.input}
+        onPress={handleSubmit(onSubmit)}
+      />
+      <Button
+        title="View alarms"
+        style={styles.input}
         onPress={() => navigation.navigate('Alarms')}
       />
     </View>
@@ -193,10 +193,9 @@ const AlarmForm = ({navigation}) => {
 const styles = StyleSheet.create({
   radioContainer: {
     flex: 1,
-    flexDirection: 'column',
-    alignItems: 'flex-start',
-    marginLeft: '35%',
-    marginTop: '5%',
+    flexDirection: 'row',
+    color: 'black',
+    textDecorationColor: 'black',
   },
   container: {
     alignContent: 'center',
@@ -206,13 +205,8 @@ const styles = StyleSheet.create({
   },
   field: {
     borderWidth: 2,
-    borderRadius: 10,
     borderColor: 'black',
-    alignContent: 'flex-end',
-    marginHorizontal: '5%',
-    marginVertical: '3%',
-    minWidth: '90%',
-    padding: 10,
+    margin: 20,
     color: 'black',
   },
   input: {
