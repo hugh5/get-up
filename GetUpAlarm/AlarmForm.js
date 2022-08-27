@@ -5,6 +5,7 @@ import DatePicker from 'react-native-date-picker';
 import {useForm, Controller} from 'react-hook-form';
 import RadioGroup from 'react-native-radio-buttons-group';
 import {setAlarm, cancelAlarm} from 'react-native-alarm-module';
+import AlarmModuleTest from './AlarmModuleTest';
 
 const radioButtonsData = [
   {
@@ -45,6 +46,10 @@ const AlarmForm = () => {
     },
   });
 
+  const createAlarm = () => {
+    AlarmModuleTest.createAlarmEvent('testName', 'testLocation');
+  };
+
   const onSubmit = data => {
     let alarmProps = {};
     alarmProps.name = data.name;
@@ -57,6 +62,8 @@ const AlarmForm = () => {
     );
     alarmProps.time = data.time;
     console.log(alarmProps.time.valueOf());
+    createAlarm();
+    /*
     setAlarm({
       taskName: alarmProps.name, // required
       timestamp: alarmProps.time.valueOf(), // required
@@ -64,6 +71,7 @@ const AlarmForm = () => {
       allowedInForeground: true, // optional
       wakeup: true, // optional
     });
+    */
   };
 
   return (
@@ -112,11 +120,7 @@ const AlarmForm = () => {
         )}
         name="stopOption"
       />
-      <Button
-        title="create"
-        style={styles.input}
-        onPress={handleSubmit(onSubmit)}
-      />
+      <Button title="create" style={styles.input} onPress={createAlarm} />
     </View>
   );
 };

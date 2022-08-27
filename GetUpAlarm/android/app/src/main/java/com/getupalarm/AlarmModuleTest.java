@@ -8,23 +8,26 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import java.util.Map;
 import java.util.HashMap;
+
+import android.app.AlarmManager;
 import android.util.Log;
 
 
-public class AlarmModule extends ReactContextBaseJavaModule {
-    AlarmModule(ReactApplicationContext context) {
+public class AlarmModuleTest extends ReactContextBaseJavaModule {
+    AlarmModuleTest(ReactApplicationContext context) {
         super(context);
     }
 
     @NonNull
     @Override
     public String getName() {
-        return "AlarmModule";
+        return "AlarmModuleTest";
     }
 
     @ReactMethod
-    public void createAlarmEvent(String name, String location) {
-        Log.d("AlarmModule", "Create event called with name: " + name
+    public void createAlarmEvent(Time name, String location) {
+        Log.d("AlarmModuleTest", "Create event called with name: " + name
                 + " and location: " + location);
+        AlarmManager.set
     }
 }
