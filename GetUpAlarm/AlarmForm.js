@@ -5,7 +5,7 @@ import DatePicker from 'react-native-date-picker';
 import {useForm, Controller} from 'react-hook-form';
 import RadioGroup from 'react-native-radio-buttons-group';
 import AlarmModuleTest from './AlarmModuleTest';
-import NfcManager, {NfcEvents} from 'react-native-nfc-manager';
+import NfcManager, {NfcEvents, NfcTech} from 'react-native-nfc-manager';
 import SoundPlayer from 'react-native-sound-player';
 
 const radioButtonsData = [
@@ -74,6 +74,7 @@ const AlarmForm = ({navigation}) => {
         ', Time ' +
         alarmProps.time,
     );
+    console.log(alarms);
 
     //Adds new alarm to array of alarms
     setAlarms([...alarms, alarmProps]);
@@ -97,11 +98,25 @@ const AlarmForm = ({navigation}) => {
       },
     );
     SoundPlayer.playSoundFile('alarm', 'mp3');
-    NfcManager.setEventListener(NfcEvents.DiscoverTag, tag => {
+
+    try {
+      // register for the NFC tag with NDEF in it
+      await NfcManager.requestTechnology(NfcTech.Ndef);
+      // the resolved tag object will contain `ndefMessage` property
+      const tag = await NfcManager.getTag();
       console.log('alarm disabled');
       SoundPlayer.stop();
-    });
-    await NfcManager.registerTagEvent();
+    } catch (ex) {
+      console.warn('Oops!', ex);
+    } finally {
+      // stop the nfc scanning
+      NfcManager.cancelTechnologyRequest();
+    }
+    // NfcManager.setEventListener(NfcEvents.DiscoverTag, tag => {
+    //   console.log('alarm disabled');
+    //   SoundPlayer.stop();
+    // });
+    // await NfcManager.registerTagEvent();
   }
 
   //Renders alarm creation form with controller to fetch data
