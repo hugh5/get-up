@@ -53,6 +53,8 @@ const AlarmForm = ({navigation}) => {
   // };
 
   const onSubmit = data => {
+    //Initialise alarm object with name, time, stop option
+    //and active status
     let alarmProps = {};
     alarmProps.name = data.name;
     const selectedStopOption = data.stopOption.findIndex(
@@ -102,6 +104,8 @@ const AlarmForm = ({navigation}) => {
     await NfcManager.registerTagEvent();
   }
 
+  //Renders alarm creation form with controller to fetch data
+  //on submit
   return (
     <View style={styles.container}>
       <Controller
@@ -163,6 +167,7 @@ const AlarmForm = ({navigation}) => {
   );
 };
 
+//Styles
 const styles = StyleSheet.create({
   container: {
     alignContent: 'center',
