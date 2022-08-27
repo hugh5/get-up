@@ -4,8 +4,9 @@ import DatePicker from 'react-native-date-picker';
 //import DateTimePicker from '@react-native-community/datetimepicker';
 import {useForm, Controller} from 'react-hook-form';
 import RadioGroup from 'react-native-radio-buttons-group';
-import {setAlarm, cancelAlarm} from 'react-native-alarm-module';
 import AlarmModuleTest from './AlarmModuleTest';
+import NfcManager, {NfcEvents} from 'react-native-nfc-manager';
+import SoundPlayer from 'react-native-sound-player';
 
 const radioButtonsData = [
   {
@@ -58,10 +59,40 @@ const AlarmForm = ({navigation}) => {
     );
     alarmProps.stopOption = data.stopOption[selectedStopOption].value;
     data.time.setMinutes(
-      data.time.getMinutes() /* data.time.getTimezoneOffset()*/,
+      data.time.getMinutes() - data.time.getTimezoneOffset(),
     );
     alarmProps.time = data.time;
-    console.log('Alarm created. Name ' + alarmProps.name + ", Stop option " + alarmProps.stopOption + ", Time " + alarmProps.time);
+    console.log(
+      'Alarm created. Name ' +
+        alarmProps.name +
+        ', Stop option ' +
+        alarmProps.stopOption +
+        ', Time ' +
+        alarmProps.time,
+    );
+    const currentDate = new Date();
+    currentDate.setMinutes(
+      currentDate.getMinutes() - currentDate.getTimezoneOffset(),
+    );
+
+    setTimeout(triggerAlarm, alarmProps.time - currentDate);
+  };
+
+  async function triggerAlarm() {
+    _onFinishedPlayingSubscription = null;
+    console.log('set alarm');
+    _onFinishedPlayingSubscription = SoundPlayer.addEventListener(
+      'FinishedPlaying',
+      ({success}) => {
+        SoundPlayer.playSoundFile('alarm', 'mp3');
+      },
+    );
+    SoundPlayer.playSoundFile('alarm', 'mp3');
+    NfcManager.setEventListener(NfcEvents.DiscoverTag, tag => {
+      console.log('alarm disabled');
+      SoundPlayer.stop();
+    });
+    await NfcManager.registerTagEvent();
 
     // createAlarm();
     /*
@@ -73,7 +104,7 @@ const AlarmForm = ({navigation}) => {
       wakeup: true, // optional
     });
     */
-  };
+  }
 
   return (
     <View style={styles.container}>
@@ -117,6 +148,7 @@ const AlarmForm = ({navigation}) => {
             onPress={onChange}
             value={value}
             onBlur={onBlur}
+            stytle={styles.field}
           />
         )}
         name="stopOption"
