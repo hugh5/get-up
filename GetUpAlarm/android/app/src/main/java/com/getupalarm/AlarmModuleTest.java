@@ -25,9 +25,8 @@ public class AlarmModuleTest extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void createAlarmEvent(Time name, String location) {
+    public void createAlarmEvent(String name, String location) {
         Log.d("AlarmModuleTest", "Create event called with name: " + name
                 + " and location: " + location);
-        AlarmManager.set
     }
 }
