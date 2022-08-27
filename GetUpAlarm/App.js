@@ -1,7 +1,7 @@
-import {Text, View, StyleSheet} from 'react-native';
+import {Text, View, StyleSheet, Button} from 'react-native';
 import React, {Component, useState} from 'react';
+import NfcManager, {NfcTech} from 'react-native-nfc-manager';
 
-import NewAlarmButton from './NewAlarmButton';
 import AlarmForm from './AlarmForm';
 // import MyStack from './TaskScreen';
 import AlarmList from './AlarmList';
@@ -9,6 +9,8 @@ import AlarmList from './AlarmList';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import TaskScreen from './TaskScreen';
+
+NfcManager.start();
 
 const Stack = createNativeStackNavigator();
 
