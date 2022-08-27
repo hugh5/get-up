@@ -4,9 +4,10 @@ import DatePicker from 'react-native-date-picker';
 //import DateTimePicker from '@react-native-community/datetimepicker';
 import {useForm, Controller} from 'react-hook-form';
 import RadioGroup from 'react-native-radio-buttons-group';
-import AlarmModuleTest from './AlarmModuleTest';
-import NfcManager, {NfcEvents, NfcTech} from 'react-native-nfc-manager';
+import NfcManager, {NfcTech} from 'react-native-nfc-manager';
 import SoundPlayer from 'react-native-sound-player';
+
+NfcManager.start();
 
 const radioButtonsData = [
   {
@@ -52,7 +53,7 @@ const AlarmForm = ({navigation}) => {
   //   AlarmModuleTest.createAlarmEvent('testName', 'testLocation');
   // };
 
-  const onSubmit = data => {
+  function onSubmit(data) {
     //Initialise alarm object with name, time, stop option
     //and active status
     let alarmProps = {};
@@ -74,7 +75,6 @@ const AlarmForm = ({navigation}) => {
         ', Time ' +
         alarmProps.time,
     );
-    console.log(alarms);
 
     //Adds new alarm to array of alarms
     setAlarms([...alarms, alarmProps]);
@@ -84,34 +84,41 @@ const AlarmForm = ({navigation}) => {
     currentDate.setMinutes(
       currentDate.getMinutes() - currentDate.getTimezoneOffset(),
     );
+
     setTimeout(triggerAlarm, alarmProps.time - currentDate);
-  };
+  }
 
   //Plays sound until nfc tag is scanned
   async function triggerAlarm() {
-    _onFinishedPlayingSubscription = null;
     console.log('set alarm');
     _onFinishedPlayingSubscription = SoundPlayer.addEventListener(
       'FinishedPlaying',
       ({success}) => {
+        console.log('looping sound');
         SoundPlayer.playSoundFile('alarm', 'mp3');
       },
     );
+    console.log('playing sound');
     SoundPlayer.playSoundFile('alarm', 'mp3');
+    console.log('initialising nfc reader');
 
     try {
       // register for the NFC tag with NDEF in it
       await NfcManager.requestTechnology(NfcTech.Ndef);
       // the resolved tag object will contain `ndefMessage` property
       const tag = await NfcManager.getTag();
-      console.log('alarm disabled');
+      console.log('alarm disabled', tag);
       SoundPlayer.stop();
+      console.log('sound stopped');
     } catch (ex) {
       console.warn('Oops!', ex);
     } finally {
       // stop the nfc scanning
+      console.log('closing nfc reader');
       NfcManager.cancelTechnologyRequest();
+      console.log('closed nfc reader');
     }
+    return;
     // NfcManager.setEventListener(NfcEvents.DiscoverTag, tag => {
     //   console.log('alarm disabled');
     //   SoundPlayer.stop();
