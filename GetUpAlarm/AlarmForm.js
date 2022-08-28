@@ -96,7 +96,7 @@ const AlarmForm = ({navigation}) => {
     );
     alarmProps.time = data.time;
     alarmProps.active = true;
-    storeData(alarmProps, data.time.toISOString());
+    storeData(JSON.stringify(alarmProps), data.time.toISOString());
     console.log(
       'Alarm created. Name ' +
         alarmProps.name +
