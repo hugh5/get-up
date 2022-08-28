@@ -193,6 +193,7 @@ const AlarmForm = ({navigation}) => {
             mode="time"
             androidVariant="nativeAndroid"
             fadeToColor="none"
+            style={styles.field}
           />
         )}
         name="time"
@@ -206,19 +207,15 @@ const AlarmForm = ({navigation}) => {
             onPress={onChange}
             value={value}
             onBlur={onBlur}
-            stytle={styles.field}
+            containerStyle={styles.radioContainer}
           />
         )}
         name="stopOption"
       />
-      <Button
-        title="create"
-        style={styles.input}
-        onPress={handleSubmit(onSubmit)}
-      />
+      <Button title="create" color="" onPress={handleSubmit(onSubmit)} />
       <Button
         title="Cancel"
-        style={styles.input}
+        color="red"
         onPress={() => navigation.navigate('Alarms')}
       />
     </View>
@@ -229,9 +226,10 @@ const AlarmForm = ({navigation}) => {
 const styles = StyleSheet.create({
   radioContainer: {
     flex: 1,
-    flexDirection: 'row',
-    color: 'black',
-    textDecorationColor: 'black',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    marginLeft: '35%',
+    marginTop: '5%',
   },
   container: {
     alignContent: 'center',
@@ -241,9 +239,15 @@ const styles = StyleSheet.create({
   },
   field: {
     borderWidth: 2,
+    borderRadius: 10,
     borderColor: 'black',
-    margin: 20,
+    alignContent: 'flex-end',
+    marginHorizontal: '5%',
+    marginVertical: '3%',
+    minWidth: '90%',
+    padding: 10,
     color: 'black',
+    backgroundColor: 'yellow',
   },
   input: {
     margin: 30,
