@@ -13,6 +13,7 @@ import RadioGroup from 'react-native-radio-buttons-group';
 import NfcManager, {NfcTech} from 'react-native-nfc-manager';
 import SoundPlayer from 'react-native-sound-player';
 import {AlarmModuleTest} from './AlarmModuleTest';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 NfcManager.start();
 
@@ -55,9 +56,31 @@ const AlarmForm = ({navigation}) => {
     },
   });
 
+  const storeData = async (value, key) => {
+    try {
+      const jsonValue = JSON.stringify(value);
+      await AsyncStorage.setItem(key, jsonValue);
+    } catch (e) {
+      // saving error
+    }
+  };
+
   // const createAlarm = () => {
   //   AlarmModuleTest.createAlarmEvent('testName', 'testLocation');
   // };
+  importData = async () => {
+    try {
+      const keys = await AsyncStorage.getAllKeys();
+      const result = await AsyncStorage.multiGet(keys);
+      return result;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  function getRndInteger(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
 
   function onSubmit(data) {
     //Initialise alarm object with name, time, stop option
@@ -73,7 +96,7 @@ const AlarmForm = ({navigation}) => {
     );
     alarmProps.time = data.time;
     alarmProps.active = true;
-    storeData(alarmProps);
+    storeData(alarmProps, data.time.toISOString());
     console.log(
       'Alarm created. Name ' +
         alarmProps.name +
@@ -82,27 +105,26 @@ const AlarmForm = ({navigation}) => {
         ', Time ' +
         alarmProps.time,
     );
-    ToastAndroid.show(
-      'Alarm created for ' + alarmProps.name + ' at ' + alarmProps.time,
-      ToastAndroid.SHORT,
-    );
-    console.log(alarms);
+    // ToastAndroid.show(
+    //   'Alarm created for ' + alarmProps.name + ' at ' + alarmProps.time,
+    //   ToastAndroid.SHORT,
+    // );
+    // console.log(alarms);
 
     //Adds new alarm to array of alarms
-    setAlarms([...alarms, alarmProps]);
 
     //Creates callback function to be triggered at time of alarm
     const currentDate = new Date();
     currentDate.setMinutes(
       currentDate.getMinutes() - currentDate.getTimezoneOffset(),
     );
-    navigation.navigate('Alarms');
 
     setTimeout(triggerAlarm, alarmProps.time - currentDate);
   }
 
   //Plays sound until nfc tag is scanned
   async function triggerAlarm() {
+    console.log(importData());
     console.log('set alarm');
     let _onFinishedPlayingSubscription = SoundPlayer.addEventListener(
       'FinishedPlaying',
@@ -117,6 +139,7 @@ const AlarmForm = ({navigation}) => {
 
     try {
       // register for the NFC tag with NDEF in it
+
       await NfcManager.requestTechnology(NfcTech.Ndef);
       // the resolved tag object will contain `ndefMessage` property
       const tag = await NfcManager.getTag();
@@ -170,7 +193,6 @@ const AlarmForm = ({navigation}) => {
             mode="time"
             androidVariant="nativeAndroid"
             fadeToColor="none"
-            style={styles.field}
           />
         )}
         name="time"
@@ -184,15 +206,19 @@ const AlarmForm = ({navigation}) => {
             onPress={onChange}
             value={value}
             onBlur={onBlur}
-            containerStyle={styles.radioContainer}
+            stytle={styles.field}
           />
         )}
         name="stopOption"
       />
-      <Button title="create" color="" onPress={handleSubmit(onSubmit)} />
+      <Button
+        title="create"
+        style={styles.input}
+        onPress={handleSubmit(onSubmit)}
+      />
       <Button
         title="Cancel"
-        color="red"
+        style={styles.input}
         onPress={() => navigation.navigate('Alarms')}
       />
     </View>
@@ -203,10 +229,9 @@ const AlarmForm = ({navigation}) => {
 const styles = StyleSheet.create({
   radioContainer: {
     flex: 1,
-    flexDirection: 'column',
-    alignItems: 'flex-start',
-    marginLeft: '35%',
-    marginTop: '5%',
+    flexDirection: 'row',
+    color: 'black',
+    textDecorationColor: 'black',
   },
   container: {
     alignContent: 'center',
@@ -216,13 +241,8 @@ const styles = StyleSheet.create({
   },
   field: {
     borderWidth: 2,
-    borderRadius: 10,
     borderColor: 'black',
-    alignContent: 'flex-end',
-    marginHorizontal: '5%',
-    marginVertical: '3%',
-    minWidth: '90%',
-    padding: 10,
+    margin: 20,
     color: 'black',
   },
   input: {
