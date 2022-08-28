@@ -102,6 +102,7 @@ const AlarmForm = ({navigation}) => {
         ', Time ' +
         alarmProps.time,
     );
+    navigation.navigate('Alarms');
     // ToastAndroid.show(
     //   'Alarm created for ' + alarmProps.name + ' at ' + alarmProps.time,
     //   ToastAndroid.SHORT,
