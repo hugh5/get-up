@@ -46,7 +46,11 @@ function AlarmList({navigation}) {
 
   return (
     <SafeAreaView style={styles.container}>
+<<<<<<< HEAD
       <ScrollView style={styles.scrollView}>{print_list}</ScrollView>
+=======
+      <ScrollView style={styles.scrollView}>{}</ScrollView>
+>>>>>>> origin/harry
       <Button
         title="New Alarm"
         onPress={() => navigation.navigate('Set Alarms')}

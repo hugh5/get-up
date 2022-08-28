@@ -102,12 +102,13 @@ const AlarmForm = ({navigation}) => {
         ', Time ' +
         alarmProps.time,
     );
+
     navigation.navigate('Alarms');
-    // ToastAndroid.show(
-    //   'Alarm created for ' + alarmProps.name + ' at ' + alarmProps.time,
-    //   ToastAndroid.SHORT,
-    // );
-    // console.log(alarms);
+    ToastAndroid.show(
+      'Alarm created for ' + alarmProps.name + ' at ' + alarmProps.time,
+      ToastAndroid.LONG,
+    );
+    console.log(alarms);
 
     //Adds new alarm to array of alarms
 
@@ -165,6 +166,7 @@ const AlarmForm = ({navigation}) => {
   return (
     <View style={styles.container}>
       <Controller
+        name="name"
         control={control}
         rules={{required: true}}
         render={({field: {onChange, onBlur, value}}) => (
@@ -176,10 +178,10 @@ const AlarmForm = ({navigation}) => {
             onChangeText={onChange}
           />
         )}
-        name="name"
       />
-      {errors.name && <Text>required.</Text>}
+      {errors.name && <Text style={styles.required}>* Required Field</Text>}
       <Controller
+        name="time"
         control={control}
         render={({field: {onChange, onBlur, value}}) => (
           <DatePicker
@@ -194,9 +196,10 @@ const AlarmForm = ({navigation}) => {
             style={styles.field}
           />
         )}
-        name="time"
       />
+
       <Controller
+        name="stopOption"
         control={control}
         rules={{required: true}}
         render={({field: {onChange, onBlur, value}}) => (
@@ -208,8 +211,10 @@ const AlarmForm = ({navigation}) => {
             containerStyle={styles.radioContainer}
           />
         )}
-        name="stopOption"
       />
+      {errors.stopOption && (
+        <Text style={styles.requiredOption}>* Required</Text>
+      )}
       <Button title="create" color="" onPress={handleSubmit(onSubmit)} />
       <Button
         title="Cancel"
@@ -222,6 +227,22 @@ const AlarmForm = ({navigation}) => {
 
 //Styles
 const styles = StyleSheet.create({
+  required: {
+    flexDirection: 'column',
+    alignContent: 'flex-end',
+    marginHorizontal: '5%',
+    minWidth: '90%',
+    color: 'red',
+    backgroundColor: '',
+  },
+  requiredOption: {
+    marginRight: 30,
+    minHeight: 70,
+    textAlignVertical: 'top',
+    textAlign: 'center',
+    color: 'red',
+    backgroundColor: '',
+  },
   radioContainer: {
     flex: 1,
     flexDirection: 'column',
@@ -245,7 +266,7 @@ const styles = StyleSheet.create({
     minWidth: '90%',
     padding: 10,
     color: 'black',
-    backgroundColor: 'yellow',
+    backgroundColor: '',
   },
   input: {
     margin: 30,
