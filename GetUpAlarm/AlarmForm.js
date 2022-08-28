@@ -103,7 +103,7 @@ const AlarmForm = ({navigation}) => {
         alarmProps.time,
     );
 
-    navigation.navigate('Alarms');
+    navigation.navigate('Alarms', {paramPropKey: 'paramPropValue'});
     ToastAndroid.show(
       'Alarm created for ' + alarmProps.name + ' at ' + alarmProps.time,
       ToastAndroid.LONG,
