@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -26,22 +26,24 @@ for (let i = 0; i < 10; i++) {
 function AlarmList({navigation}) {
   importData = async () => {
     try {
-      await AsyncStorage.clear();
       const keys = await AsyncStorage.getAllKeys();
       const result = await AsyncStorage.multiGet(keys);
       console.log(result);
-      return result.map(req => JSON.parse(req));
+      return result;
     } catch (error) {
       console.error(error);
     }
   };
 
+  const [alarms, setAlarms] = useState();
+
   useEffect(() => {
-    importData();
+    console.log('getting data');
+    importData().then(response => setAlarms(response));
   }, []);
 
-  const alarms = importData();
-  console.log(alarms);
+  importData();
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrollView}>{print_list}</ScrollView>
