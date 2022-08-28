@@ -6,6 +6,7 @@ import {
   ScrollView,
   StatusBar,
   Button,
+  View,
 } from 'react-native';
 
 import {NavigationContainer} from '@react-navigation/native';
@@ -17,25 +18,46 @@ function AlarmList({navigation}) {
     try {
       const keys = await AsyncStorage.getAllKeys();
       const result = await AsyncStorage.multiGet(keys);
-      console.log(result);
+      console.log('keys length', keys.length);
       return result;
     } catch (error) {
       console.error(error);
     }
   };
 
-  const [alarms, setAlarms] = useState();
+  const [alarms, setAlarms] = useState([]);
+  const [loaded, setLoaded] = useState(false);
+  const [alarmDisplay, setAlarmDisplay] = useState([]);
+  useEffect(() => {
+    setLoaded(false);
+  });
 
   useEffect(() => {
-    console.log('getting data');
-    importData().then(response => setAlarms(response));
-  }, []);
+    async function getAlarms() {
+      let alarmDisplayPartial = [];
+      const data = await importData();
+      setAlarms(data);
+      console.log('empty display', alarmDisplayPartial);
+      console.log('alarms', alarms);
+      alarms.forEach(element => {
+        const elementObj = JSON.parse(element[1]);
+        alarmDisplayPartial.push([
+          <Text style={styles.alarm} key={elementObj.name}>
+            {elementObj.name + ' , ' + elementObj.time.slice(11, 16)}
+          </Text>,
+        ]);
+      });
+      setAlarmDisplay(alarmDisplayPartial);
+      console.log('display', alarmDisplay);
+      setLoaded(true);
+    }
 
-  importData();
+    getAlarms();
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.scrollView}>{}</ScrollView>
+      <ScrollView style={styles.scrollView}>{alarmDisplay}</ScrollView>
       <Button
         title="New Alarm"
         onPress={() => navigation.navigate('Set Alarms')}
@@ -45,6 +67,14 @@ function AlarmList({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  alarm: {
+    fontSize: 50,
+    borderColor: 'black',
+    backgroundColor: 'white',
+    borderStyle: 'solid',
+    borderWidth: 2,
+    marginBottom: 10,
+  },
   container: {
     flex: 1,
     paddingTop: StatusBar.currentHeight,
