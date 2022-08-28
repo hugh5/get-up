@@ -28,9 +28,9 @@ function AlarmList({navigation}) {
   const [alarms, setAlarms] = useState([]);
   const [loaded, setLoaded] = useState(false);
   const [alarmDisplay, setAlarmDisplay] = useState([]);
-  useEffect(() => {
+  useEffect(async () => {
     setLoaded(false);
-  });
+  }, [navigation]);
 
   function cap(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -50,11 +50,11 @@ function AlarmList({navigation}) {
     async function getAlarms() {
       let alarmDisplayPartial = [];
       const data = await importData();
-      setAlarms(data);
+
       console.log('empty display', alarmDisplayPartial);
-      console.log('alarms', alarms);
+
       console.log('data', data);
-      alarms.forEach(element => {
+      data.forEach(element => {
         console.log('element', element);
         const elementObj = JSON.parse(element[1]);
         alarmDisplayPartial.push([
@@ -62,7 +62,7 @@ function AlarmList({navigation}) {
             <Text style={styles.time} key={elementObj.name}>
               {format_time(elementObj.time.slice(11, 16))}
             </Text>
-            <Text style={styles.info}>
+            <Text style={styles.info} key={elementObj.time}>
               {elementObj.name + ' - ' + cap(elementObj.stopOption)}
             </Text>
           </View>,
