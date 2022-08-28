@@ -78,10 +78,6 @@ const AlarmForm = ({navigation}) => {
     }
   };
 
-  function getRndInteger(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
-
   function onSubmit(data) {
     //Initialise alarm object with name, time, stop option
     //and active status
@@ -96,7 +92,8 @@ const AlarmForm = ({navigation}) => {
     );
     alarmProps.time = data.time;
     alarmProps.active = true;
-    storeData(JSON.stringify(alarmProps), data.time.toISOString());
+    console.log('storing data');
+    storeData(alarmProps, data.time.toISOString());
     console.log(
       'Alarm created. Name ' +
         alarmProps.name +
