@@ -32,6 +32,20 @@ function AlarmList({navigation}) {
     setLoaded(false);
   });
 
+  function cap(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+
+  function format_time(string) {
+    let x = parseInt(string.slice(0, 2));
+    if (x > 12) {
+      console.log('time', x);
+      return x - 12 + string.slice(2, 5) + ' pm';
+    } else {
+      return string + ' am';
+    }
+  }
+
   useEffect(() => {
     async function getAlarms() {
       let alarmDisplayPartial = [];
@@ -39,12 +53,19 @@ function AlarmList({navigation}) {
       setAlarms(data);
       console.log('empty display', alarmDisplayPartial);
       console.log('alarms', alarms);
+      console.log('data', data);
       alarms.forEach(element => {
+        console.log('element', element);
         const elementObj = JSON.parse(element[1]);
         alarmDisplayPartial.push([
-          <Text style={styles.alarm} key={elementObj.name}>
-            {elementObj.name + ' , ' + elementObj.time.slice(11, 16)}
-          </Text>,
+          <View style={styles.alarm}>
+            <Text style={styles.time} key={elementObj.name}>
+              {format_time(elementObj.time.slice(11, 16))}
+            </Text>
+            <Text style={styles.info}>
+              {elementObj.name + ' - ' + cap(elementObj.stopOption)}
+            </Text>
+          </View>,
         ]);
       });
       setAlarmDisplay(alarmDisplayPartial);
@@ -68,19 +89,25 @@ function AlarmList({navigation}) {
 
 const styles = StyleSheet.create({
   alarm: {
-    fontSize: 50,
     borderColor: 'black',
-    backgroundColor: 'white',
+    backgroundColor: 'whitesmoke',
     borderStyle: 'solid',
     borderWidth: 2,
     marginBottom: 10,
   },
+  info: {
+    fontSize: 20,
+  },
+  time: {
+    fontSize: 30,
+  },
   container: {
+    backgroundColor: 'white',
     flex: 1,
     paddingTop: StatusBar.currentHeight,
   },
   scrollView: {
-    backgroundColor: 'pink',
+    backgroundColor: 'white',
     marginHorizontal: 20,
   },
   text: {

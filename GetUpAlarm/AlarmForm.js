@@ -108,7 +108,6 @@ const AlarmForm = ({navigation}) => {
       'Alarm created for ' + alarmProps.name + ' at ' + alarmProps.time,
       ToastAndroid.LONG,
     );
-    console.log(alarms);
 
     //Adds new alarm to array of alarms
 
