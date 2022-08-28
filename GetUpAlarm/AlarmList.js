@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -15,35 +15,27 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 function AlarmList({navigation}) {
   importData = async () => {
     try {
-      await AsyncStorage.clear();
       const keys = await AsyncStorage.getAllKeys();
       const result = await AsyncStorage.multiGet(keys);
       console.log(result);
-      return result.map(req => JSON.parse(req));
+      return result;
     } catch (error) {
       console.error(error);
     }
   };
 
+  const [alarms, setAlarms] = useState();
+
   useEffect(() => {
-    importData();
+    console.log('getting data');
+    importData().then(response => setAlarms(response));
   }, []);
 
-  const alarms = importData();
-  console.log(alarms);
+  importData();
+
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.scrollView}>
-        <Text style={styles.text}>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-          culpa qui officia deserunt mollit anim id est laborum.
-        </Text>
-      </ScrollView>
+      <ScrollView style={styles.scrollView}>{}</ScrollView>
       <Button
         title="New Alarm"
         onPress={() => navigation.navigate('Set Alarms')}
